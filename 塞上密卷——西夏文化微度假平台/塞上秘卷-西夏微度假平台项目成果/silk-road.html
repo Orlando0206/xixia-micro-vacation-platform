@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>丝路遗珍·宁夏非遗</title>
+    <style>
+        :root {
+            --main-color: #A0522D;
+            --bg-color: #F5DEB3;
+            --text-color: #4B3621;
+        }
+
+        body {
+            padding: 20px;
+            background: var(--bg-color);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .heritage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 1fr;
+            gap: 20px;
+            width: 90%;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        .heritage-card {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .heritage-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .card-image {
+            height: 70%;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 3px solid var(--main-color);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            color: var(--text-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        /* 美观的返回按钮样式 */
+        .button {
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 24px;
+            font-size: 18px;
+            color: rgb(193, 163, 98);
+            border: 2px solid rgb(193, 163, 98);
+            border-radius: 34px;
+            background-color: transparent;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            z-index: 1000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: inherit;
+            scale: 0;
+            z-index: -1;
+            background-color: rgb(193, 163, 98);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .button:hover::before {
+            scale: 3;
+        }
+
+        .button:hover {
+            color: #212121;
+            scale: 1.1;
+            box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+        }
+
+        .button:active {
+            scale: 1;
+        }
+    </style>
+</head>
+<body>
+    <a href="入口.html" class="button">← 返回首页</a>
+    
+    <div class="container">
+        <h1 style="color: var(--text-color); text-align: center; margin-bottom: 40px;">宁夏非物质文化遗产</h1>
+        
+        <div class="heritage-grid">
+            <a href="heritage-detail.html?id=泥哇呜" class="heritage-card">
+                <div class="card-image" style="background-image: url('资料/images/泥哇呜.jpg')"></div>
+                <div class="card-content">
+                    <h2 class="card-title">泥哇呜</h2>
+                    <p class="card-description">宁夏传统民间乐器，用黏土捏制而成，吹奏时发出"呜呜"声...</p>
+                </div>
+            </a>
+            <!-- 糖画 -->
+            <a href="heritage-detail.html?id=糖画" class="heritage-card">
+                <div class="card-image" style="background-image: url('资料/images/糖化艺术.jpg')"></div>
+                <div class="card-content">
+                    <h2 class="card-title">糖画艺术</h2>
+                    <p class="card-description">流传百年的民间糖塑技艺，艺人以糖为墨、以勺为笔，创作出栩栩如生的糖画作品。</p>
+                </div>
+            </a>
+
+            <!-- 咪咪 -->
+            <a href="heritage-detail.html?id=咪咪" class="heritage-card">
+                <div class="card-image" style="background-image: url('资料/images/咪咪.jpg')"></div>
+                <div class="card-content">
+                    <h2 class="card-title">咪咪乐器</h2>
+                    <p class="card-description">宁夏传统竹制吹奏乐器，音色清脆悠扬，常用于民间婚庆和节日庆典伴奏。</p>
+                </div>
+            </a>
+
+            <!-- 固原砖雕 -->
+            <a href="heritage-detail.html?id=固原砖雕" class="heritage-card">
+                <div class="card-image" style="background-image: url('资料/images/固原砖雕.jpg')"></div>
+                <div class="card-content">
+                    <h2 class="card-title">固原砖雕</h2>
+                    <p class="card-description">传承六百年的建筑装饰技艺，以青砖为材精雕细刻，图案涵盖花鸟瑞兽、吉祥纹样，广泛应用于寺观民居的墙饰雕刻。</p>
+                </div>
+            </a>
+
+            <!-- 农民画 -->
+            <a href="heritage-detail.html?id=农民画" class="heritage-card">
+                <div class="card-image" style="background-image: url('资料/images/隆德农民画.jpg')"></div>
+                <div class="card-content">
+                    <h2 class="card-title">隆德农民画</h2>
+                    <p class="card-description">色彩浓烈的民间绘画艺术，以农村生活为题材，具有强烈的装饰性和地域特色。</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>宁夏旅游图片</title>
+<style>
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: inline-block; /* 使卡片宽度自适应内容 */
+        width: fit-content; /* 兼容性较好的写法，也可以使用 max-width 限制最大宽度 */
+        max-width: 100%; /* 防止卡片过宽 */
+    }
+    .card img {
+        max-width: 100%;
+        height: auto;
+        display: block; /* 防止图片下方出现间隙 */
+    }
+    .card p {
+        margin: 8px 0 0; /* 调整段落与图片的间距 */
+    }
+    .card img{
+        width: 400px;
+    }
+
+    /* 美观的返回按钮样式 */
+    .button {
+        cursor: pointer;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 10px 24px;
+        font-size: 18px;
+        color: rgb(193, 163, 98);
+        border: 2px solid rgb(193, 163, 98);
+        border-radius: 34px;
+        background-color: transparent;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+        overflow: hidden;
+        z-index: 1000;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 50px;
+        height: 50px;
+        border-radius: inherit;
+        scale: 0;
+        z-index: -1;
+        background-color: rgb(193, 163, 98);
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .button:hover::before {
+        scale: 3;
+    }
+
+    .button:hover {
+        color: #212121;
+        scale: 1.1;
+        box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+    }
+
+        .button:active {
+            scale: 1;
+        }
+        
+        /* 西夏文旅页面增强 */
+        body {
+            background: 
+                linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(135deg, #F5DEB3 0%, #E8D7A8 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-position: 0 0, 20px 20px, 0 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 30px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.3);
+        }
+        
+        .page-title {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            background: linear-gradient(45deg, #D4AF37, #CD853F, #8B0000);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .page-subtitle {
+            color: #4B3621;
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+</style>
+</head>
+<body >
+<div class="page-header">
+    <h1 class="page-title">塞上旅图·攻略指南</h1>
+    <div class="page-subtitle">精选旅游路线 · 详尽出行攻略</div>
+</div>
+
+<div style="display: flex;">
+    <div class="card">
+        <img src="img/图片1.jpg" alt="">
+    </div>
+    <div class="card">
+        <img src="img/图片2.jpg" alt="">
+    </div>
+    <div class="card">
+        <img src="img/图片3.jpg" alt="">
+    </div>
+    <div class="card">
+        <img src="img/图片9.jpg" alt="">
+        <p>中卫</p>
+    </div>
+    <div class="card">
+        <img src="img/图片8.jpg" alt="">
+        <p>固原</p>
+    </div>
+</div>
+
+<div style="display: flex;">
+    <div class="card" style="display: flex; ">
+        <img src="img/图片4.jpg" alt="" style="width: 350px;">
+        <img src="img/图片5.jpg" alt="">
+        <img src="img/图片6.jpg" alt="">
+        <img src="img/图片7.jpg" alt="">
+    </div>
+    <div class="card">
+        <img src="img/图片13.jpg" alt="">
+        <img src="img/图片14.jpg" alt="">
+        <img src="img/图片15.jpg" alt="">
+        <p>关于宁夏旅游的讨论</p>
+    </div>
+
+</div>
+
+<div style="display: flex;">
+<div class="card" style="display: flex; ">
+    <img src="img/图片10.jpg" alt="" style="width: 350px;">
+    <img src="img/图片11.jpg" alt="" style="width: 350px;">
+    <p>吴忠</p>
+</div>
+<div class="card">
+    <img src="img/图片12.jpg" alt="" style="width: 350px;">
+    <p>石嘴山</p>
+</div>
+</div>
+<a href="入口.html" class="button">
+    ← 返回首页
+</a>
+</body>
+</html>

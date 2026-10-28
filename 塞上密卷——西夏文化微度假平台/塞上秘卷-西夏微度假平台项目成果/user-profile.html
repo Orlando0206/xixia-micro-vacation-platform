@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户详情 - 塞上论坛</title>
+    <style>
+        :root {
+            --primary-color: #D4AF37;
+            --secondary-color: #CD853F;
+            --accent-color: #A0522D;
+            --text-color: #4B3621;
+            --light-bg: #F5E6B3;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(212, 175, 55, 0.3);
+            --shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', '方正古隶', 'Segoe UI', sans-serif;
+            background: 
+                linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(135deg, var(--light-bg) 0%, #E8D7A8 100%);
+            background-size: 60px 60px, 60px 60px, 100% 100%;
+            background-position: 0 0, 30px 30px, 0 0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            color: rgb(193, 163, 98);
+            border: 2px solid rgb(193, 163, 98);
+            border-radius: 34px;
+            background-color: transparent;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            text-decoration: none;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: inherit;
+            scale: 0;
+            z-index: -1;
+            background-color: rgb(193, 163, 98);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .back-btn:hover::before {
+            scale: 3;
+        }
+
+        .back-btn:hover {
+            color: #212121;
+            scale: 1.1;
+            box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+        }
+
+        .back-btn:active {
+            scale: 1;
+        }
+
+        .profile-header {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .user-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            margin: 0 auto 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .user-name {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .user-title {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .user-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .content-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-item {
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .post-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .post-title {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .post-excerpt {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            width: 24px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--text-color);
+            width: 80px;
+        }
+
+        .info-value {
+            color: #666;
+            flex: 1;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-gold {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+        }
+
+        .badge-silver {
+            background: linear-gradient(45deg, #C0C0C0, #808080);
+        }
+
+        .badge-bronze {
+            background: linear-gradient(45deg, #CD7F32, #8B4513);
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-stats {
+                gap: 20px;
+            }
+
+            .user-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="forum.html" class="back-btn">
+            ← 返回论坛
+        </a>
+
+        <div class="profile-header">
+            <div class="user-avatar-large" id="userAvatar">👤</div>
+            <h1 class="user-name" id="userName">游客用户</h1>
+            <p class="user-title" id="userTitle">西夏文旅爱好者</p>
+            
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="postCount">12</span>
+                    <span class="stat-label">发帖数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="likeCount">156</span>
+                    <span class="stat-label">获赞数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="viewCount">2.3k</span>
+                    <span class="stat-label">浏览量</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="dayCount">45</span>
+                    <span class="stat-label">活跃天数</span>
+                </div>
+            </div>
+
+            <div class="user-actions">
+                <button class="action-btn btn-primary" onclick="followUser()">
+                    ➕ 关注
+                </button>
+                <button class="action-btn btn-secondary" onclick="sendMessage()">
+                    💬 私信
+                </button>
+                <button class="action-btn btn-secondary" onclick="shareProfile()">
+                    📤 分享
+                </button>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="content-section">
+                <h2 class="section-title">
+                    📝 最近发布
+                </h2>
+                <div class="posts-list" id="userPosts">
+                    <!-- 用户帖子将在这里动态加载 -->
+                </div>
+            </div>
+
+            <div>
+                <div class="content-section" style="margin-bottom: 30px;">
+                    <h2 class="section-title">
+                        ℹ️ 用户信息
+                    </h2>
+                    <div class="info-item">
+                        <span class="info-icon">📅</span>
+                        <span class="info-label">注册时间</span>
+                        <span class="info-value" id="joinDate">2024年1月</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📍</span>
+                        <span class="info-label">所在地</span>
+                        <span class="info-value" id="location">宁夏银川</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">🎯</span>
+                        <span class="info-label">兴趣</span>
+                        <span class="info-value" id="interests">文化旅游、摄影</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">🌟</span>
+                        <span class="info-label">活跃分区</span>
+                        <span class="info-value" id="activeCategory">西夏王陵</span>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <h2 class="section-title">
+                        🏆 成就徽章
+                    </h2>
+                    <div class="badges" id="userBadges">
+                        <!-- 徽章将在这里动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用户数据
+        const userData = {
+            name: '沙漠旅行者',
+            avatar: '🏔️',
+            title: '资深西夏文化探索者',
+            postCount: 28,
+            likeCount: 342,
+            viewCount: '5.2k',
+            dayCount: 89,
+            joinDate: '2023年8月',
+            location: '宁夏中卫',
+            interests: '沙漠旅游、文化摄影、历史研究',
+            activeCategory: '中卫沙坡头',
+            posts: [
+                {
+                    id: 1,
+                    title: '沙坡头日落绝美瞬间！',
+                    excerpt: '昨天在沙坡头看到了最美的日落，黄河与沙漠交融的景色太震撼了！推荐大家傍晚时分去，光线最美...',
+                    time: '2小时前',
+                    likes: 42,
+                    comments: 8
+                },
+                {
+                    id: 2,
+                    title: '中卫特色美食探店记',
+                    excerpt: '今天探访了几家中卫当地特色餐厅，烤全羊和手抓羊肉真的太香了！分享几个必去的店铺...',
+                    time: '1天前',
+                    likes: 31,
+                    comments: 12
+                },
+                {
+                    id: 3,
+                    title: '沙漠徒步装备推荐',
+                    excerpt: '作为多次沙漠徒步的老驴友，给大家推荐一些实用的装备。防晒、保温、导航一个都不能少...',
+                    time: '3天前',
+                    likes: 28,
+                    comments: 6
+                }
+            ],
+            badges: [
+                { name: '活跃用户', type: 'gold', icon: '⭐' },
+                { name: '优质发帖', type: 'silver', icon: '📝' },
+                { name: '热心助人', type: 'bronze', icon: '🤝' },
+                { name: '摄影达人', type: 'gold', icon: '📸' }
+            ]
+        };
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+        });
+
+        // 加载用户资料
+        function loadUserProfile() {
+            // 更新基本信息
+            document.getElementById('userAvatar').textContent = userData.avatar;
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userTitle').textContent = userData.title;
+            
+            // 更新统计数据
+            document.getElementById('postCount').textContent = userData.postCount;
+            document.getElementById('likeCount').textContent = userData.likeCount;
+            document.getElementById('viewCount').textContent = userData.viewCount;
+            document.getElementById('dayCount').textContent = userData.dayCount;
+            
+            // 更新详细信息
+            document.getElementById('joinDate').textContent = userData.joinDate;
+            document.getElementById('location').textContent = userData.location;
+            document.getElementById('interests').textContent = userData.interests;
+            document.getElementById('activeCategory').textContent = userData.activeCategory;
+            
+            // 加载用户帖子
+            loadUserPosts();
+            
+            // 加载用户徽章
+            loadUserBadges();
+        }
+
+        // 加载用户帖子
+        function loadUserPosts() {
+            const postsContainer = document.getElementById('userPosts');
+            
+            if (userData.posts.length === 0) {
+                postsContainer.innerHTML = '<p style="text-align: center; color: #666;">暂无发布内容</p>';
+                return;
+            }
+            
+            postsContainer.innerHTML = userData.posts.map(post => `
+                <div class="post-item" onclick="openPost(${post.id})">
+                    <h3 class="post-title">${post.title}</h3>
+                    <p class="post-excerpt">${post.excerpt}</p>
+                    <div class="post-meta">
+                        <span>${post.time}</span>
+                        <span>👍 ${post.likes} 💬 ${post.comments}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载用户徽章
+        function loadUserBadges() {
+            const badgesContainer = document.getElementById('userBadges');
+            
+            if (userData.badges.length === 0) {
+                badgesContainer.innerHTML = '<p style="text-align: center; color: #666;">暂无徽章</p>';
+                return;
+            }
+            
+            badgesContainer.innerHTML = userData.badges.map(badge => `
+                <div class="badge badge-${badge.type}" title="${badge.name}">
+                    ${badge.icon} ${badge.name}
+                </div>
+            `).join('');
+        }
+
+        // 关注用户
+        function followUser() {
+            const btn = event.target;
+            if (btn.textContent.includes('关注')) {
+                btn.innerHTML = '✓ 已关注';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+                showToast('关注成功！', 'success');
+            } else {
+                btn.innerHTML = '➕ 关注';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+                showToast('已取消关注', 'info');
+            }
+        }
+
+        // 发送私信
+        function sendMessage() {
+            showToast('私信功能开发中...', 'info');
+        }
+
+        // 分享资料
+        function shareProfile() {
+            if (navigator.share) {
+                navigator.share({
+                    title: `${userData.name}的个人资料`,
+                    text: `来看看${userData.name}在塞上论坛的精彩分享！`,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast('链接已复制到剪贴板！', 'success');
+                });
+            }
+        }
+
+        // 打开帖子详情
+        function openPost(postId) {
+            showToast('跳转到帖子详情...', 'info');
+            // 这里可以跳转到具体的帖子页面
+        }
+
+        // 消息提示函数
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const colors = {
+                success: '#4CAF50',
+                error: '#f44336',
+                info: '#2196F3',
+                warning: '#FF9800'
+            };
+            
+            toast.style.cssText = `
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                background: ${colors[type]};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                max-width: 300px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            `;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

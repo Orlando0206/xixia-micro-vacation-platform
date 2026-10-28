@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塞上秘卷·宁夏导览</title>
+    <style>
+        :root {
+            --main-color: #A0522D;
+            --accent-color: #CD853F;
+            --text-color: #4B3621;
+            --light-color: #F5E6B3;
+            --dark-color: #4B3621;
+            --gold-color: #D4AF37;
+            --ancient-red: #8B0000;
+            --sand-color: #F4A460;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: 
+                linear-gradient(45deg, rgba(212, 175, 55, 0.1) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(212, 175, 55, 0.1) 25%, transparent 25%),
+                linear-gradient(135deg, #F4D03F 10%, #D35400);
+            background-size: 60px 60px, 60px 60px, 100% 100%;
+            background-position: 0 0, 30px 30px, 0 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', '方正古隶', serif;
+            min-height: 100vh;
+            color: var(--dark-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(160, 82, 45, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(205, 133, 63, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .main-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .main-title h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--gold-color), var(--accent-color), var(--ancient-red));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 0;
+            letter-spacing: 3px;
+            position: relative;
+        }
+        
+        .main-title h1::before {
+            content: '◆';
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-color);
+            font-size: 0.6em;
+            animation: pulse 2s infinite;
+        }
+        
+        .main-title h1::after {
+            content: '◆';
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-color);
+            font-size: 0.6em;
+            animation: pulse 2s infinite 0.5s;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: var(--text-color);
+            font-weight: 300;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .user-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .login-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            box-shadow: 
+                0 4px 15px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .login-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(0,0,0,0.15),
+                0 0 0 3px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+        }
+        
+        .login-icon {
+            font-size: 18px;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 80%;
+            margin: 0 auto 60px;
+            box-shadow: 
+                0 4px 20px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            border-radius: 35px;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .search-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold-color), var(--accent-color), var(--main-color));
+            border-radius: 37px;
+            z-index: -1;
+        }
+        
+        input[type="search"] {
+            width: 100%;
+            padding: 18px 60px 18px 30px;
+            border: none;
+            border-radius: 33px;
+            font-size: 18px;
+            background: transparent;
+            transition: all 0.3s ease;
+            color: var(--dark-color);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        input[type="search"]:focus {
+            outline: none;
+            box-shadow: 
+                0 0 0 3px rgba(212, 175, 55, 0.4),
+                0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        input[type="search"]::placeholder {
+            color: #A89F94;
+            font-weight: 300;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+        
+        .nav-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 
+                0 8px 30px rgba(0,0,0,0.15),
+                0 0 0 2px rgba(212, 175, 55, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            border: none;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            height: 220px;
+            min-height: 220px;
+            cursor: pointer;
+            perspective: 1000px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                0 0 0 3px rgba(212, 175, 55, 0.6),
+                0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.85;
+            z-index: 0;
+            transition: all 0.6s ease;
+            transform: scale(1);
+        }
+        
+        .nav-card:hover .card-bg {
+            opacity: 0.95;
+            transform: scale(1.1);
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
+            border-radius: 16px;
+            padding: 25px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        
+        .nav-card:hover .card-content {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5));
+        }
+        
+        
+        .card-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .nav-card:hover .card-title {
+            transform: translateY(-3px);
+            text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        
+        .search-results {
+            position: absolute;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            border-radius: 0 0 35px 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .search-item {
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .search-item:hover {
+            background: rgba(0,0,0,0.03);
+        }
+        
+        .search-item .name {
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .search-item .address {
+            color: #777;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .bg-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+        
+        .footer {
+            background: rgba(0,0,0,0.8);
+            padding: 40px 0;
+            color: white;
+            margin-top: 80px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .wechat-section img {
+            width: 150px;
+            height: 150px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .wechat-section img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        
+        /* 背景图片样式 */
+        .camel-bg { background-image: url('资料/images/沙漠驼影.jpg'); }
+        .mountain-bg { background-image: url('资料/images/贺兰岩蕴.jpg'); }
+        .style-bg { background-image: url('资料/images/西域风格迁移.jpg'); }
+        .forum-bg { background-image: url('资料/images/赛上论坛.jpg'); }
+        .history-bg { background-image: url('资料/images/丝路遗珍.jpg'); }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .search-box {
+                width: 95%;
+                margin-bottom: 40px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 10px;
+            }
+            
+            .nav-card {
+                height: 180px;
+                min-height: 180px;
+            }
+            
+            .card-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .card-title {
+                font-size: 18px;
+            }
+        }
+        
+        /* 波纹效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* 标题装饰 */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        /* 卡片悬停效果增强 */
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            z-index: 1;
+        }
+        
+        .nav-card:hover::before {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-video">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="资料/视频/宁夏宣传视频/3bd344c5-ec8d-46d8-bb56-927c5e308d21.mp4" type="video/mp4">
+            <source src="资料/视频/宁夏宣传视频/4202b6ef-18f2-499d-ad7d-b14a84422916.mp4" type="video/mp4">
+            <source src="资料/视频/宁夏宣传视频/a35df5ed-0b6d-445d-b894-8bfb2e0e3947.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="container">
+        <div class="main-title">
+            <h1>塞上秘卷</h1>
+            <div class="subtitle">探寻西夏古韵 · 品味塞上江南</div>
+        </div>
+        
+        <div class="user-controls">
+            <a href="login.html" class="login-link">
+                <span class="login-icon">👤</span>
+                登录
+            </a>
+        </div>
+        
+        <div class="search-box">
+            <input type="search" placeholder="探索塞上江南..." aria-label="搜索宁夏特色">
+        </div>
+
+        <div class="card-grid">
+            <div class="nav-card">
+                <div class="card-bg camel-bg"></div>
+                <a href="meishi.html">
+                <div class="card-content">
+                    <div class="card-title">景区整理</div>
+                </div>
+            </a>
+            </div>
+            
+            <div class="nav-card">
+                <div class="card-bg mountain-bg"></div>
+                <a href="gonglv.html">
+                <div class="card-content">
+                    <div class="card-title">旅游攻略图</div>
+                </div>
+            </a>
+            </div>
+            
+            <div class="nav-card" onclick="window.location.href='style-transfer.html'">
+                <div class="card-bg style-bg"></div>
+                <div class="card-content">
+                    <div class="card-title">影界重构</div>
+                </div>
+            </div>
+            
+            <div class="nav-card" onclick="window.location.href='forum.html'">
+                <div class="card-bg forum-bg"></div>
+                <div class="card-content">
+                    <div class="card-title">塞上论坛</div>
+                </div>
+            </div>
+            
+            <div class="nav-card" onclick="window.location.href='silk-road.html'">
+                <div class="card-bg history-bg"></div>
+                <div class="card-content">
+                    <div class="card-title">丝路遗珍</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="coze-chat-container"></div>
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.5/libs/cn/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgVideo = document.getElementById('bg-video');
+            const videoSources = bgVideo.querySelectorAll('source');
+            let currentVideoIndex = 0;
+            
+            // 视频轮播
+            setInterval(() => {
+                currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+                bgVideo.src = videoSources[currentVideoIndex].src;
+                bgVideo.load();
+                
+                bgVideo.onerror = function() {
+                    console.error('视频加载失败:', bgVideo.src);
+                    currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+                    bgVideo.src = videoSources[currentVideoIndex].src;
+                    bgVideo.load();
+                    bgVideo.play();
+                };
+                
+                bgVideo.play().catch(e => {
+                    console.error('视频播放失败:', e);
+                    currentVideoIndex = (currentVideoIndex + 1) % videoSources.length;
+                    bgVideo.src = videoSources[currentVideoIndex].src;
+                    bgVideo.load();
+                    bgVideo.play();
+                });
+            }, 10000);
+            
+            // Coze聊天机器人初始化
+            try {
+                const cozeClient = new CozeWebSDK.WebChatClient({
+                    autoInit: true,
+                    UI: {
+                        base: {
+                            icon: 'https://lf9-appstore-sign.oceancloudapi.com/ocean-cloud-tos/FileBizType.BIZ_BOT_ICON/3727812829911500_1745544122153879126.jpeg?lk3s=ca44e09c&x-expires=1758362769&x-signature=%2BJWi6tz5Ybg39KXYGu3gLq4%2BByY%3D'
+                        }
+                    },
+                    config: {
+                        bot_id: '7480800301465944075',
+                        layout: 'bubble'
+                    },
+                    componentProps: {
+                        title: '🏛️ 塞上旅游小助手',
+                        placeholder: '💬 探寻西夏秘境，请告诉我您想了解什么...',
+                        bubbleButtonStyle: {
+                            background: 'linear-gradient(45deg, #D4AF37, #CD853F, #A0522D)',
+                            color: 'white',
+                            border: '3px solid rgba(212, 175, 55, 0.8)',
+                            borderRadius: '50%',
+                            width: '65px',
+                            height: '65px',
+                            right: '20px',
+                            bottom: '20px',
+                            boxShadow: '0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(212, 175, 55, 0.4)',
+                            fontSize: '24px',
+                            cursor: 'pointer',
+                            transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                            backdropFilter: 'blur(10px)',
+                            '&:hover': {
+                                transform: 'scale(1.1) translateY(-3px)',
+                                boxShadow: '0 12px 35px rgba(0,0,0,0.4), 0 0 30px rgba(212, 175, 55, 0.6)',
+                                background: 'linear-gradient(45deg, #F7DC6F, #D4AF37, #CD853F)'
+                            }
+                        },
+                        chatStyle: {
+                            chatBgColor: 'linear-gradient(135deg, #F5E6B3 0%, #E8D7A8 100%)',
+                            headerBgColor: 'linear-gradient(90deg, #D4AF37, #CD853F, #A0522D)',
+                            headerTextColor: 'white',
+                            inputBgColor: 'linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+                            inputBorderColor: 'rgba(212, 175, 55, 0.5)',
+                            inputBorderRadius: '25px',
+                            inputPadding: '15px 20px',
+                            sendButtonBgColor: 'linear-gradient(45deg, #D4AF37, #CD853F)',
+                            sendButtonBorderRadius: '50%',
+                            botMessageBgColor: 'linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+                            botMessageBorderRadius: '20px 20px 20px 5px',
+                            botMessagePadding: '15px 20px',
+                            botMessageShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                            userMessageBgColor: 'linear-gradient(45deg, #D4AF37, #CD853F, #A0522D)',
+                            userMessageBorderRadius: '20px 20px 5px 20px',
+                            userMessageColor: 'white',
+                            userMessagePadding: '15px 20px',
+                            userMessageShadow: '0 4px 15px rgba(160, 82, 45, 0.3)',
+                            botMessageColor: '#4B3621',
+                            messageMargin: '10px 0',
+                            chatPadding: '20px',
+                            scrollbarColor: 'rgba(212, 175, 55, 0.6)',
+                            borderRadius: '25px',
+                            boxShadow: '0 20px 60px rgba(0,0,0,0.2), 0 0 0 2px rgba(212, 175, 55, 0.3)',
+                            backdropFilter: 'blur(10px)'
+                        },
+                        iconStyle: {
+                            content: '🏛️',
+                            fontSize: '28px',
+                            animation: 'pulse 2s infinite'
+                        }
+                    },
+                    auth: {
+                        type: 'token',
+                        token: 'pat_QfQniXammRaZL2PuhqFG77tMw5LrLhOLuy7QJRDgstwMqjq2luwhzotXsz2TIf6R',
+                        onRefreshToken: () => 'pat_QfQniXammRaZL2PuhqFG77tMw5LrLhOLuy7QJRDgstwMqjq2luwhzotXsz2TIf6R'
+                    }
+                }).init();
+
+                cozeClient.onInitialized(() => {
+                    console.log('Coze客户端初始化完成');
+                });
+
+                cozeClient.onError((error) => {
+                    console.error('Coze客户端错误:', error);
+                });
+
+                cozeClient.onMessage((message) => {
+                    console.log('收到消息:', message);
+                });
+
+                // 等待Coze组件加载完成后应用自定义样式
+                setTimeout(() => {
+                    customizeCozeStyles();
+                }, 2000);
+
+            } catch (error) {
+                console.error('初始化Coze客户端时出错:', error);
+            }
+
+            // 自定义Coze样式函数
+            function customizeCozeStyles() {
+                // 创建自定义样式
+                const style = document.createElement('style');
+                style.textContent = `
+                    /* Coze 聊天气泡按钮样式优化 */
+                    [class*="bubble-button"], [class*="BubbleButton"] {
+                        background: linear-gradient(45deg, #D4AF37, #CD853F, #A0522D) !important;
+                        border: 3px solid rgba(212, 175, 55, 0.8) !important;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(212, 175, 55, 0.4) !important;
+                        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+                        backdrop-filter: blur(10px) !important;
+                        position: relative !important;
+                        overflow: hidden !important;
+                    }
+
+                    [class*="bubble-button"]:hover, [class*="BubbleButton"]:hover {
+                        transform: scale(1.1) translateY(-3px) !important;
+                        box-shadow: 0 12px 35px rgba(0,0,0,0.4), 0 0 30px rgba(212, 175, 55, 0.6) !important;
+                        background: linear-gradient(45deg, #F7DC6F, #D4AF37, #CD853F) !important;
+                    }
+
+                    /* 为气泡按钮添加自定义背景图片 */
+                    [class*="bubble-button"], [class*="BubbleButton"] {
+                        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ic2t5IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I0ZGRTZBQTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ3MDA7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I0ZGQTAwMDtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im1vdW50YWluIiB4MT0iMCUiIHkxPSI0MCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNEMkI0OEM7c3RvcC1vcGFjaXR5OjAuOCIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNDRDg1M0Y7c3RvcC1vcGFjaXR5OjAuOSIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojQTA1MjJEO3N0b3Atb3BhY2l0eToxIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZGVzZXJ0IiB4MT0iMCUiIHkxPSI1MCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkRBNjY7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I0ZEODU0MjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gU2t5IC0tPgogIDxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSIyOCIgZmlsbD0idXJsKCNza3kpIi8+CiAgPCEtLSBEaXN0YW50IG1vdW50YWlucyAtLT4KICA8cGF0aCBkPSJNMCAyOCBROCAyNCAyMCAyNiBRMzIgMjIgNDggMjQgUTU2IDI2IDY0IDI0IFY0NCBIMCBaIiBmaWxsPSJ1cmwoI21vdW50YWluKSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBNaWRkbGUgaGlsbHMgLS0+CiAgPHBhdGggZD0iTTAgMzggUTEyIDM0IDI0IDM2IFEzNiAzMiA0OCAzNiBRNTYgMzggNjQgMzYgVjUyIEgwIFoiIGZpbGw9IiNBMDUyMkQiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gRm9yZWdyb3VuZCBkdW5lcyAtLT4KICA8cGF0aCBkPSJNMCA0OCBROCAzOCAyNCA0NiBRMzYgNDIgNDggNDQgUTU2IDQ2IDY0IDQ0IFY2NCBIMCBaIiBmaWxsPSJ1cmwoI2Rlc2VydCkiLz4KICA8IS0tIENhbWVsIGFuZCByaWRlciAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MCw0NikiPgogICAgPCEtLSBDYW1lbCBib2R5IC0tPgogICAgPGVsbGlwc2UgY3g9IjYiIGN5PSI0IiByeD0iNCIgcnk9IjIiIGZpbGw9IiMxMDEwMTAiLz4KICAgIDwhLS0gQ2FtZWwgbGVncyAtLT4KICAgIDxyZWN0IHg9IjQiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjMiIGZpbGw9IiMxMDEwMTAiLz4KICAgIDxyZWN0IHg9IjciIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjMiIGZpbGw9IiMxMDEwMTAiLz4KICAgIDwhLS0gQ2FtZWwgbmVjayBhbmQgaGVhZCAtLT4KICAgIDxyZWN0IHg9IjkiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjMiIGZpbGw9IiMxMDEwMTAiLz4KICAgIDxjaXJjbGUgY3g9IjEwIiBjeT0iMiIgcj0iMSIgZmlsbD0iIzEwMTAxMCIvPgogICAgPCEtLSBIdW1wIC0tPgogICAgPGNpcmNsZSBjeD0iNiIgY3k9IjIiIHI9IjEuNSIgZmlsbD0iIzEwMTAxMCIvPgogICAgPCEtLSBSaWRlciAtLT4KICAgIDxjaXJjbGUgY3g9IjUiIGN5PSIxIiByPSIxIiBmaWxsPSIjMTAxMDEwIi8+CiAgPC9nPgogIDwhLS0gU3VuIC0tPgogIDxjaXJjbGUgY3g9IjUyIiBjeT0iMTIiIHI9IjMiIGZpbGw9IiNGRkQ4MDAiIG9wYWNpdHk9IjAuOSIvPgogIDxjaXJjbGUgY3g9IjQ2IiBjeT0iOCIgcj0iMiIgZmlsbD0iI0ZGRTZBQSIgb3BhY2l0eT0iMC43Ii8+CiAgPCEtLSBCaXJkcyAtLT4KICA8ZWxsaXBzZSBjeD0iMTQiIGN5PSIxOCIgcng9IjEuNSIgcnk9IjAuNSIgZmlsbD0iIzEwMTAxMCIgb3BhY2l0eT0iMC42Ii8+CiAgPGVsbGlwc2UgY3g9IjIyIiBjeT0iMjAiIHJ4PSIxLjUiIHJ5PSIwLjUiIGZpbGw9IiMxMDEwMTAiIG9wYWNpdHk9IjAuNiIvPgogIDxlbGxpcHNlIGN4PSIzNCIgY3k9IjE2IiByeD0iMS41IiByeT0iMC41IiBmaWxsPSIjMTAxMDEwIiBvcGFjaXR5PSIwLjYiLz4KPC9zdmc+') !important;
+                        background-size: cover !important;
+                        background-position: center !important;
+                        background-repeat: no-repeat !important;
+                    }
+                    
+                    /* 移除原有的emoji图标 */
+                    [class*="bubble-button"]::before, [class*="BubbleButton"]::before {
+                        display: none !important;
+                    }
+
+                    @keyframes coze-pulse {
+                        0%, 100% { 
+                            opacity: 0.8; 
+                            transform: translate(-50%, -50%) scale(1); 
+                        }
+                        50% { 
+                            opacity: 1; 
+                            transform: translate(-50%, -50%) scale(1.1); 
+                        }
+                    }
+
+                    /* 聊天窗口样式优化 */
+                    [class*="chat-container"], [class*="ChatContainer"] {
+                        background: linear-gradient(135deg, #F5E6B3 0%, #E8D7A8 100%) !important;
+                        border-radius: 25px !important;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 3px rgba(212, 175, 55, 0.3) !important;
+                        backdrop-filter: blur(15px) !important;
+                        overflow: hidden !important;
+                        border: none !important;
+                    }
+
+                    /* 聊天头部样式 */
+                    [class*="chat-header"], [class*="ChatHeader"] {
+                        background: linear-gradient(90deg, #D4AF37, #CD853F, #A0522D) !important;
+                        color: white !important;
+                        padding: 20px !important;
+                        font-weight: 600 !important;
+                        font-size: 18px !important;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+                        position: relative !important;
+                    }
+
+                    [class*="chat-header"]::before {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        height: 3px;
+                        background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+                    }
+
+                    /* 消息气泡样式 */
+                    [class*="bot-message"], [class*="BotMessage"] {
+                        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
+                        border-radius: 20px 20px 20px 5px !important;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+                        color: #4B3621 !important;
+                        padding: 15px 20px !important;
+                        margin: 10px 0 !important;
+                        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+                    }
+
+                    [class*="user-message"], [class*="UserMessage"] {
+                        background: linear-gradient(45deg, #D4AF37, #CD853F, #A0522D) !important;
+                        border-radius: 20px 20px 5px 20px !important;
+                        color: white !important;
+                        box-shadow: 0 4px 15px rgba(160, 82, 45, 0.3) !important;
+                        padding: 15px 20px !important;
+                        margin: 10px 0 !important;
+                    }
+
+                    /* 输入框样式 */
+                    [class*="chat-input"], [class*="ChatInput"] input {
+                        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)) !important;
+                        border: 2px solid rgba(212, 175, 55, 0.5) !important;
+                        border-radius: 25px !important;
+                        padding: 15px 20px !important;
+                        color: #4B3621 !important;
+                        font-size: 16px !important;
+                        backdrop-filter: blur(5px) !important;
+                    }
+
+                    [class*="chat-input"]:focus, [class*="ChatInput"] input:focus {
+                        border-color: rgba(212, 175, 55, 0.8) !important;
+                        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3) !important;
+                        outline: none !important;
+                    }
+
+                    /* 发送按钮样式 */
+                    [class*="send-button"], [class*="SendButton"] {
+                        background: linear-gradient(45deg, #D4AF37, #CD853F) !important;
+                        border-radius: 50% !important;
+                        border: none !important;
+                        color: white !important;
+                        padding: 12px !important;
+                        box-shadow: 0 4px 15px rgba(160, 82, 45, 0.3) !important;
+                        transition: all 0.3s ease !important;
+                    }
+
+                    [class*="send-button"]:hover, [class*="SendButton"]:hover {
+                        transform: scale(1.1) !important;
+                        box-shadow: 0 6px 20px rgba(160, 82, 45, 0.4) !important;
+                    }
+
+                    /* 滚动条样式 */
+                    [class*="chat-messages"]::-webkit-scrollbar {
+                        width: 8px !important;
+                    }
+
+                    [class*="chat-messages"]::-webkit-scrollbar-track {
+                        background: rgba(0,0,0,0.1) !important;
+                        border-radius: 10px !important;
+                    }
+
+                    [class*="chat-messages"]::-webkit-scrollbar-thumb {
+                        background: linear-gradient(180deg, #D4AF37, #CD853F) !important;
+                        border-radius: 10px !important;
+                    }
+
+                    [class*="chat-messages"]::-webkit-scrollbar-thumb:hover {
+                        background: linear-gradient(180deg, #F7DC6F, #D4AF37) !important;
+                    }
+
+                    /* 打字指示器样式 */
+                    [class*="typing-indicator"] {
+                        color: rgba(212, 175, 55, 0.8) !important;
+                    }
+
+                    /* 添加西夏文化装饰元素 */
+                    [class*="chat-container"]::after {
+                        content: '';
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        width: 20px;
+                        height: 20px;
+                        background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+                        border-radius: 50%;
+                        animation: sparkle 3s infinite;
+                    }
+
+                    @keyframes sparkle {
+                        0%, 100% { opacity: 0.3; transform: scale(1); }
+                        50% { opacity: 0.8; transform: scale(1.2); }
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // 定期检查并重新应用样式（防止动态加载覆盖）
+                setInterval(() => {
+                    const bubbleBtn = document.querySelector('[class*="bubble-button"], [class*="BubbleButton"]');
+                    if (bubbleBtn && !bubbleBtn.dataset.styled) {
+                        bubbleBtn.dataset.styled = 'true';
+                        // 可以在这里添加更多自定义逻辑
+                    }
+                }, 1000);
+            }
+            
+            // 添加卡片点击波纹效果
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // 动态背景渐变
+            let angle = 135;
+            setInterval(() => {
+                angle = (angle + 0.5) % 360;
+                document.body.style.background = 
+                    `linear-gradient(${angle}deg, #F4D03F 10%, #D35400)`;
+            }, 50);
+            
+            // 卡片浮动动画
+            const cards = document.querySelectorAll('.nav-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = `float 4s ease-in-out infinite ${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

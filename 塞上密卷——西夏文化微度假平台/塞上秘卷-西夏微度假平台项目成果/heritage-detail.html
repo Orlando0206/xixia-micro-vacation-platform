@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非遗详情·塞上秘卷</title>
+    <style>
+        :root {
+            --main-color: #A0522D;
+            --accent-color: #CD853F;
+            --text-color: #4B3621;
+            --light-color: #F5E6B3;
+            --gold-color: #D4AF37;
+            --ancient-red: #8B0000;
+            --bg-color: #F5DEB3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', '方正古隶', serif;
+            background: 
+                linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(135deg, var(--bg-color) 0%, #E8D7A8 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-position: 0 0, 20px 20px, 0 0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(160, 82, 45, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 美观的返回按钮样式 */
+        .button {
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 24px;
+            font-size: 18px;
+            color: rgb(193, 163, 98);
+            border: 2px solid rgb(193, 163, 98);
+            border-radius: 34px;
+            background-color: transparent;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            z-index: 1000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: inherit;
+            scale: 0;
+            z-index: -1;
+            background-color: rgb(193, 163, 98);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .button:hover::before {
+            scale: 3;
+        }
+
+        .button:hover {
+            color: #212121;
+            scale: 1.1;
+            box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+        }
+
+        .button:active {
+            scale: 1;
+        }
+
+        .heritage-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: 25px;
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.15),
+                0 0 0 3px rgba(212, 175, 55, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heritage-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold-color), var(--accent-color), var(--main-color), var(--ancient-red));
+        }
+
+        .heritage-title {
+            font-size: 3em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--gold-color), var(--accent-color), var(--ancient-red));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .heritage-subtitle {
+            color: var(--text-color);
+            font-size: 1.3em;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .heritage-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .heritage-image {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .heritage-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.15),
+                0 0 0 3px rgba(212, 175, 55, 0.4);
+        }
+
+        .heritage-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .heritage-info {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-title {
+            font-size: 1.4em;
+            color: var(--main-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .info-title::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--gold-color);
+        }
+
+        .info-text {
+            color: var(--text-color);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .heritage-gallery {
+            margin-bottom: 40px;
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, var(--gold-color), var(--accent-color));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.15),
+                0 0 0 3px rgba(212, 175, 55, 0.4);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        }
+
+        .gallery-item h3 {
+            color: var(--main-color);
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .gallery-item p {
+            color: var(--text-color);
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .heritage-features {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 25px;
+            color: var(--main-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.5), rgba(255,255,255,0.3));
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: var(--gold-color);
+        }
+
+        .feature-title {
+            font-size: 1.1em;
+            color: var(--main-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            color: var(--text-color);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .heritage-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .heritage-title {
+                font-size: 2.2em;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .heritage-header,
+        .heritage-content,
+        .heritage-gallery,
+        .heritage-features {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .heritage-content {
+            animation-delay: 0.2s;
+        }
+
+        .heritage-gallery {
+            animation-delay: 0.4s;
+        }
+
+        .heritage-features {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <a href="silk-road.html" class="button">← 返回列表</a>
+
+    <div class="container">
+        <div class="heritage-header">
+            <h1 class="heritage-title" id="heritage-name">非遗项目详情</h1>
+            <p class="heritage-subtitle" id="heritage-desc">深入了解宁夏非物质文化遗产的精髓</p>
+        </div>
+
+        <div class="heritage-content">
+            <div class="heritage-image">
+                <img id="main-image" src="" alt="非遗主图">
+            </div>
+            
+            <div class="heritage-info">
+                <div class="info-section">
+                    <h3 class="info-title">历史渊源</h3>
+                    <p class="info-text" id="history-text">加载中...</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">制作工艺</h3>
+                    <p class="info-text" id="craft-text">加载中...</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3 class="info-title">文化价值</h3>
+                    <p class="info-text" id="value-text">加载中...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="heritage-gallery">
+            <h2 class="gallery-title">精美图集</h2>
+            <div class="gallery-grid" id="gallery-container">
+                <!-- 动态加载图片 -->
+            </div>
+        </div>
+
+        <div class="heritage-features">
+            <h2 class="features-title">项目特色</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <h4 class="feature-title">工艺精湛</h4>
+                    <p class="feature-desc">传承千年的精湛技艺，每个细节都体现匠心独运</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🏛️</div>
+                    <h4 class="feature-title">历史悠久</h4>
+                    <p class="feature-desc">承载着深厚的历史文化底蕴，见证岁月变迁</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌟</div>
+                    <h4 class="feature-title">独具特色</h4>
+                    <p class="feature-desc">具有鲜明的地域特色和民族风情</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">👥</div>
+                    <h4 class="feature-title">传承保护</h4>
+                    <p class="feature-desc">需要我们共同努力保护和传承这珍贵的文化遗产</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 非遗项目数据
+        const heritageData = {
+            '泥哇呜': {
+                name: '泥哇呜',
+                desc: '宁夏传统民间乐器，用黏土捏制而成，音色古朴悠扬',
+                mainImage: '资料/images/泥哇呜.jpg',
+                history: '泥哇呜起源于古代西夏，是当地农民在田间劳作时自制的娱乐乐器。用当地特有的黏土捏制而成，经过晾晒烧制，形成独特的音腔结构。历经千年传承，成为宁夏地区独有的民间乐器。',
+                craft: '选用优质黏土，经过和泥、成型、晾干、烧制等多道工序。制作时需要掌握泥土的湿度、成型的手法、烧制的火候，每个环节都影响最终的音质效果。传统工艺要求制作者具备丰富的经验和娴熟的技巧。',
+                value: '泥哇呜不仅是一种乐器，更是宁夏民间文化的重要载体。它承载着当地人民的生活记忆，体现了劳动人民的智慧和创造力，对研究西夏文化、民间音乐具有重要价值。',
+                gallery: [
+                    { img: '资料/images/详情/泥哇呜/1.jpg', title: '传统制作工艺', desc: '老艺人正在精心制作泥哇呜' },
+                    { img: '资料/images/详情/泥哇呜/2.jpg', title: '成品展示', desc: '各种形状和大小的泥哇呜' },
+                    { img: '资料/images/详情/泥哇呜/3.jpg', title: '演奏场景', desc: '民间艺人演奏泥哇呜' }
+                ]
+            },
+            '糖画': {
+                name: '糖画艺术',
+                desc: '流传百年的民间糖塑技艺，艺人以糖为墨、以勺为笔，创作栩栩如生的糖画作品',
+                mainImage: '资料/images/糖化艺术.jpg',
+                history: '糖画起源于明代，在宁夏地区已有数百年历史。最初是街头艺人的谋生手艺，后来发展成为民间艺术形式。糖画艺人走街串巷，为人们带来甜蜜的艺术享受，是童年回忆中不可缺少的一部分。',
+                craft: '以白糖、红糖为原料，加热熔化至合适温度，用特制的勺子快速在石板上绘制图案。需要掌握糖浆的温度、流动性，以及娴熟的绘画技巧。从简单的花鸟到复杂的人物，都需要一气呵成。',
+                value: '糖画艺术体现了民间艺人的智慧和创造力，是传统手工艺的典型代表。它不仅是一种技艺，更是一种文化传承，承载着深厚的民俗文化内涵，对研究民间艺术发展具有重要意义。',
+                gallery: [
+                    { img: '资料/images/详情/糖画/1.jpg', title: '糖画制作过程', desc: '艺人正在绘制精美糖画' },
+                    { img: '资料/images/详情/糖画/2.jpg', title: '精美作品', desc: '各种造型的糖画作品' },
+                    { img: '资料/images/详情/糖画/3.jpg', title: '传承现场', desc: '老师傅传授糖画技艺' }
+                ]
+            },
+            '咪咪': {
+                name: '咪咪乐器',
+                desc: '宁夏传统竹制吹奏乐器，音色清脆悠扬，常用于民间婚庆和节日庆典伴奏',
+                mainImage: '资料/images/咪咪.jpg',
+                history: '咪咪是宁夏回族地区的传统乐器，历史可追溯到元代。因其发音似"咪咪"而得名。在回族婚庆、节日庆典中经常使用，是重要的民族乐器之一。',
+                craft: '选用优质竹材，经过选料、开孔、调音等工序制作。制作时需要精确计算音孔位置，确保音准。传统工艺要求制作者既要有木工技能，又要懂得音律知识。',
+                value: '咪咪乐器是宁夏回族音乐文化的重要组成部分，体现了民族音乐的独特魅力。对研究回族音乐文化、民族乐器发展历史具有重要学术价值和文化意义。',
+                gallery: [
+                    { img: '资料/images/详情/咪咪/1.jpg', title: '制作工艺', desc: '精细的竹制工艺' },
+                    { img: '资料/images/详情/咪咪/2.jpg', title: '演奏技法', desc: '传统演奏姿势' },
+                    { img: '资料/images/详情/咪咪/3.jpg', title: '节庆表演', desc: '节日庆典中的咪咪演奏' }
+                ]
+            },
+            '固原砖雕': {
+                name: '固原砖雕',
+                desc: '传承六百年的建筑装饰技艺，以青砖为材精雕细刻，图案涵盖花鸟瑞兽、吉祥纹样',
+                mainImage: '资料/images/固原砖雕.jpg',
+                history: '固原砖雕始于明代，距今已有600多年历史。最初用于宗教建筑装饰，后来扩展到民居建筑。固原地区的砖雕工艺精湛，图案丰富，是西北地区砖雕艺术的代表。',
+                craft: '选用优质青砖，运用浮雕、透雕、圆雕等技法，雕刻花鸟、人物、几何图案等。工艺复杂，需要精湛的雕刻技艺和深厚的文化底蕴。从设计到完成，一件作品往往需要数月时间。',
+                value: '固原砖雕是中国传统建筑装饰艺术的珍贵遗产，体现了古代工匠的高超技艺和美学追求。对研究中国传统建筑文化、装饰艺术发展具有重要价值。',
+                gallery: [
+                    { img: '资料/images/详情/固原砖雕/1.jpg', title: '精美雕刻', desc: '细致入微的砖雕工艺' },
+                    { img: '资料/images/详情/固原砖雕/2.jpg', title: '传统图案', desc: '富含寓意的装饰图案' },
+                    { img: '资料/images/详情/固原砖雕/3.jpg', title: '建筑应用', desc: '砖雕在古建筑中的应用' }
+                ]
+            },
+            '农民画': {
+                name: '隆德农民画',
+                desc: '色彩浓烈的民间绘画艺术，以农村生活为题材，具有强烈的装饰性和地域特色',
+                mainImage: '资料/images/隆德农民画.jpg',
+                history: '隆德农民画兴起于20世纪70年代，以当地农民为创作主体，反映农村生活和民俗文化。经过几十年发展，形成了独特的艺术风格，成为宁夏民间艺术的重要代表。',
+                craft: '以水粉、丙烯为主要材料，在画布或纸张上创作。色彩鲜艳，构图饱满，具有浓郁的民间特色。创作题材多为农村生活、民俗活动、自然风光等，表现手法质朴生动。',
+                value: '隆德农民画真实反映了当代农村生活和文化变迁，具有重要的社会学和艺术价值。作为民间艺术形式，它体现了农民群众的艺术创造力和审美追求。',
+                gallery: [
+                    { img: '资料/images/详情/农民画/1.jpg', title: '创作现场', desc: '农民画家正在创作' },
+                    { img: '资料/images/详情/农民画/2.jpg', title: '经典作品', desc: '色彩丰富的农民画作品' },
+                    { img: '资料/images/详情/农民画/3.jpg', title: '展览展示', desc: '农民画作品展览' }
+                ]
+            }
+        };
+
+        // 获取URL参数
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 初始化页面
+        function initPage() {
+            const heritageId = getUrlParameter('id') || '泥哇呜';
+            const data = heritageData[heritageId];
+            
+            if (data) {
+                document.getElementById('heritage-name').textContent = data.name;
+                document.getElementById('heritage-desc').textContent = data.desc;
+                document.getElementById('main-image').src = data.mainImage;
+                document.getElementById('main-image').alt = data.name;
+                document.getElementById('history-text').textContent = data.history;
+                document.getElementById('craft-text').textContent = data.craft;
+                document.getElementById('value-text').textContent = data.value;
+                
+                // 加载图集
+                const galleryContainer = document.getElementById('gallery-container');
+                galleryContainer.innerHTML = '';
+                data.gallery.forEach(item => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    galleryItem.innerHTML = `
+                        <img src="${item.img}" alt="${item.title}" onerror="this.src='资料/images/图3.jpg'">
+                        <h3>${item.title}</h3>
+                        <p>${item.desc}</p>
+                    `;
+                    galleryContainer.appendChild(galleryItem);
+                });
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

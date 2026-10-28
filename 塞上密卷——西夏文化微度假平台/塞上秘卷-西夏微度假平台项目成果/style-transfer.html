@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>西域风格迁移</title>
+    <style>
+        :root {
+            --main-color: #A0522D;
+            --bg-color: #F5DEB3;
+        }
+
+        body {
+            padding: 20px;
+            background: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-box {
+            border: 3px dashed var(--main-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            cursor: pointer;
+            background: rgba(255,255,255,0.9);
+        }
+
+        #preview {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 20px 0;
+            transition: filter 0.3s ease;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .style-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .style-category {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            color: #4B3621;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .style-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, var(--main-color), #CD853F);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(160, 82, 45, 0.3);
+            background: linear-gradient(45deg, #CD853F, var(--main-color));
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .ai-panel {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(205, 133, 63, 0.1));
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+        }
+
+        .strength-control {
+            margin: 20px 0;
+        }
+
+        .strength-control label {
+            display: block;
+            color: #4B3621;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .strength-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, rgba(212, 175, 55, 0.3), #D4AF37);
+            outline: none;
+            appearance: none;
+        }
+
+        .strength-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #D4AF37, #CD853F);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .comparison-view {
+            display: flex;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .image-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image-container h3 {
+            color: #4B3621;
+            margin-bottom: 10px;
+        }
+
+        .comparison-image {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .batch-upload {
+            border: 3px dashed rgba(212, 175, 55, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 15px;
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D4AF37, #CD853F);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .export-btn {
+            background: linear-gradient(45deg, #228B22, #32CD32);
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.1em;
+        }
+
+        .share-btn {
+            background: linear-gradient(45deg, #1E90FF, #87CEEB);
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.1em;
+        }
+
+        /* 美观的返回按钮样式 */
+        .button {
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 24px;
+            font-size: 18px;
+            color: rgb(193, 163, 98);
+            border: 2px solid rgb(193, 163, 98);
+            border-radius: 34px;
+            background-color: transparent;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            z-index: 1000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: inherit;
+            scale: 0;
+            z-index: -1;
+            background-color: rgb(193, 163, 98);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .button:hover::before {
+            scale: 3;
+        }
+
+        .button:hover {
+            color: #212121;
+            scale: 1.1;
+            box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
+        }
+
+        .button:active {
+            scale: 1;
+        }
+        
+        /* 西夏文旅页面增强 */
+        body {
+            background: 
+                linear-gradient(45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(212, 175, 55, 0.05) 25%, transparent 25%),
+                linear-gradient(135deg, var(--bg-color) 0%, #E8D7A8 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-position: 0 0, 20px 20px, 0 0;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 30px rgba(0,0,0,0.1),
+                0 0 0 2px rgba(212, 175, 55, 0.3);
+        }
+        
+        .page-title {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            background: linear-gradient(45deg, #D4AF37, #CD853F, #8B0000);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .page-subtitle {
+            color: #4B3621;
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <a href="入口.html" class="button">← 返回首页</a>
+    
+    <div class="page-header">
+        <h1 class="page-title">影界重构·风格迁移</h1>
+        <div class="page-subtitle">西域艺术风格转换 · 数字文化创新</div>
+    </div>
+    
+    <div class="container">
+        <!-- 上传区域 -->
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <h2>🎨 选择您的图片</h2>
+            <p>支持JPG/PNG格式，最大10MB</p>
+            <input type="file" id="fileInput" hidden accept="image/*">
+        </div>
+        
+        <!-- 批量上传 -->
+        <div class="batch-upload" onclick="document.getElementById('batchInput').click()">
+            <h3>📸 批量处理</h3>
+            <p>一次上传多张图片进行批量风格转换</p>
+            <input type="file" id="batchInput" hidden accept="image/*" multiple>
+        </div>
+
+        <!-- 对比预览区域 -->
+        <div class="comparison-view" id="comparisonView" style="display: none;">
+            <div class="image-container">
+                <h3>原始图片</h3>
+                <img id="originalPreview" class="comparison-image" alt="原始图片">
+            </div>
+            <div class="image-container">
+                <h3>效果预览</h3>
+                <img id="styledPreview" class="comparison-image" alt="风格化图片">
+            </div>
+        </div>
+
+        <!-- AI智能风格转换 -->
+        <div class="ai-panel">
+            <h2>智能风格转换</h2>
+            <div class="strength-control">
+                <label for="strengthSlider">风格强度：<span id="strengthValue">50%</span></label>
+                <input type="range" id="strengthSlider" class="strength-slider" min="0" max="100" value="50">
+            </div>
+            <div class="controls">
+                <button onclick="aiStyleTransfer('auto')">🎭 智能处理</button>
+                <button onclick="aiStyleTransfer('enhance')">✨ 画质增强</button>
+                <button onclick="resetImage()">🔄 重置原图</button>
+            </div>
+            <div class="progress-bar" id="progressBar" style="display: none;">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- 风格分类 -->
+        <div class="style-categories">
+            <!-- 传统艺术风格 -->
+            <div class="style-category">
+                <div class="category-title">🏛️ 传统艺术</div>
+                <div class="style-buttons">
+                    <button onclick="applyStyle('tangut_mural')">西夏壁画</button>
+                    <button onclick="applyStyle('stone_carving')">石窟雕刻</button>
+                    <button onclick="applyStyle('silk_painting')">丝绸画</button>
+                    <button onclick="applyStyle('porcelain')">瓷器纹饰</button>
+                </div>
+            </div>
+
+            <!-- 现代融合风格 -->
+            <div class="style-category">
+                <div class="category-title">🎨 现代融合</div>
+                <div class="style-buttons">
+                    <button onclick="applyStyle('oil_painting')">油画质感</button>
+                    <button onclick="applyStyle('watercolor')">水彩晕染</button>
+                    <button onclick="applyStyle('comic')">漫画风格</button>
+                    <button onclick="applyStyle('cyberpunk')">科技风格</button>
+                </div>
+            </div>
+
+            <!-- 纹理效果 -->
+            <div class="style-category">
+                <div class="category-title">🎭 纹理效果</div>
+                <div class="style-buttons">
+                    <button onclick="applyStyle('bronze')">青铜质感</button>
+                    <button onclick="applyStyle('marble')">大理石纹</button>
+                    <button onclick="applyStyle('fabric')">织锦纹理</button>
+                    <button onclick="applyStyle('aged_paper')">古纸泛黄</button>
+                </div>
+            </div>
+
+            <!-- 光效处理 -->
+            <div class="style-category">
+                <div class="category-title">💡 光效处理</div>
+                <div class="style-buttons">
+                    <button onclick="applyStyle('golden_hour')">黄金时刻</button>
+                    <button onclick="applyStyle('moonlight')">月光朦胧</button>
+                    <button onclick="applyStyle('neon')">霓虹闪烁</button>
+                    <button onclick="applyStyle('sunset_glow')">夕阳余晖</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 作品画廊 -->
+        <div class="gallery" id="gallery">
+            <!-- 画廊项目将通过JavaScript动态添加 -->
+        </div>
+
+        <!-- 导出和分享选项 -->
+        <div class="export-options">
+            <button class="export-btn" onclick="downloadImage()">💾 下载高清作品</button>
+            <button class="export-btn" onclick="downloadBatch()">📦 批量下载</button>
+            <button class="share-btn" onclick="shareToSocial()">📱 分享到塞上论坛</button>
+            <button class="share-btn" onclick="saveToGallery()">🖼️ 保存到画廊</button>
+        </div>
+    </div>
+
+    <script>
+        // 风格滤镜定义
+        const styleFilters = {
+            // 传统艺术风格
+            tangut_mural: 'sepia(80%) contrast(120%) saturate(110%) hue-rotate(15deg) brightness(95%)',
+            stone_carving: 'grayscale(30%) contrast(140%) brightness(85%) drop-shadow(2px 2px 4px rgba(0,0,0,0.3))',
+            silk_painting: 'saturate(130%) contrast(110%) brightness(105%) hue-rotate(10deg) blur(0.3px)',
+            porcelain: 'brightness(110%) contrast(120%) saturate(90%) hue-rotate(180deg)',
+            
+            // 现代融合风格
+            oil_painting: 'saturate(120%) contrast(115%) brightness(102%) blur(0.5px)',
+            watercolor: 'saturate(110%) brightness(108%) contrast(95%) blur(0.8px) opacity(0.9)',
+            comic: 'contrast(150%) saturate(140%) brightness(110%) hue-rotate(5deg)',
+            cyberpunk: 'contrast(130%) saturate(150%) hue-rotate(260deg) brightness(90%)',
+            
+            // 纹理效果
+            bronze: 'sepia(60%) contrast(125%) saturate(80%) hue-rotate(30deg) brightness(80%)',
+            marble: 'grayscale(20%) contrast(130%) brightness(95%) saturate(70%)',
+            fabric: 'saturate(110%) contrast(108%) brightness(98%) blur(0.2px)',
+            aged_paper: 'sepia(70%) contrast(105%) brightness(95%) saturate(85%)',
+            
+            // 光效处理
+            golden_hour: 'sepia(40%) saturate(120%) contrast(110%) brightness(110%) hue-rotate(15deg)',
+            moonlight: 'brightness(70%) contrast(120%) saturate(60%) hue-rotate(200deg)',
+            neon: 'contrast(140%) saturate(160%) brightness(120%) hue-rotate(280deg)',
+            sunset_glow: 'sepia(30%) saturate(130%) contrast(115%) brightness(105%) hue-rotate(350deg)'
+        };
+
+        let currentImage = null;
+        let originalImageData = null;
+        let gallery = JSON.parse(localStorage.getItem('styleGallery')) || [];
+        let batchFiles = [];
+
+        // 强度滑块事件
+        document.getElementById('strengthSlider').addEventListener('input', function(e) {
+            const value = e.target.value;
+            document.getElementById('strengthValue').textContent = value + '%';
+            updateFilterStrength(value);
+        });
+
+        // 单张图片上传
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                loadImage(file);
+            }
+        });
+
+        // 批量图片上传
+        document.getElementById('batchInput').addEventListener('change', function(e) {
+            batchFiles = Array.from(e.target.files);
+            showProgress('批量处理准备中...', 0);
+            setTimeout(() => {
+                processBatchImages();
+            }, 1000);
+        });
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                currentImage = event.target.result;
+                originalImageData = event.target.result;
+                
+                // 显示对比视图
+                document.getElementById('comparisonView').style.display = 'flex';
+                document.getElementById('originalPreview').src = currentImage;
+                document.getElementById('styledPreview').src = currentImage;
+                
+                showProgress('图片加载完成', 100);
+                setTimeout(() => {
+                    hideProgress();
+                }, 1000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyStyle(styleName) {
+            if (!currentImage) {
+                alert('请先上传图片！');
+                return;
+            }
+
+            showProgress('正在应用' + getStyleDisplayName(styleName) + '风格...', 30);
+            
+            setTimeout(() => {
+                const styledImg = document.getElementById('styledPreview');
+                styledImg.style.filter = styleFilters[styleName];
+                styledImg.style.transition = 'filter 0.5s ease';
+                
+                showProgress('风格应用完成', 100);
+                setTimeout(() => {
+                    hideProgress();
+                }, 1000);
+            }, 1500);
+        }
+
+        function aiStyleTransfer(mode) {
+            if (!currentImage) {
+                alert('请先上传图片！');
+                return;
+            }
+
+            showProgress('AI正在分析图片...', 0);
+            
+            // 模拟AI处理过程
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 根据模式应用不同的AI风格
+                    let aiStyle;
+                    switch(mode) {
+                        case 'auto':
+                            // 随机选择一个推荐风格
+                            const autoStyles = ['tangut_mural', 'oil_painting', 'golden_hour'];
+                            aiStyle = autoStyles[Math.floor(Math.random() * autoStyles.length)];
+                            break;
+                        case 'enhance':
+                            aiStyle = 'contrast(120%) saturate(110%) brightness(105%) unsharp-mask(1px)';
+                            break;
+                    }
+                    
+                    const styledImg = document.getElementById('styledPreview');
+                    if (typeof aiStyle === 'string' && aiStyle.includes('contrast')) {
+                        styledImg.style.filter = aiStyle;
+                    } else {
+                        styledImg.style.filter = styleFilters[aiStyle];
+                    }
+                    
+                    showProgress('AI处理完成', 100);
+                    setTimeout(() => {
+                        hideProgress();
+                    }, 1000);
+                }
+                showProgress('AI正在处理...', Math.min(progress, 100));
+            }, 200);
+        }
+
+        function processBatchImages() {
+            if (batchFiles.length === 0) return;
+            
+            let processed = 0;
+            batchFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        // 为每张图片应用随机风格
+                        const styleNames = Object.keys(styleFilters);
+                        const randomStyle = styleNames[Math.floor(Math.random() * styleNames.length)];
+                        
+                        addToGallery(event.target.result, randomStyle, file.name);
+                        processed++;
+                        
+                        const progress = (processed / batchFiles.length) * 100;
+                        showProgress(`处理中 ${processed}/${batchFiles.length}`, progress);
+                        
+                        if (processed === batchFiles.length) {
+                            setTimeout(() => {
+                                hideProgress();
+                                alert('批量处理完成！');
+                            }, 1000);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }, index * 500);
+            });
+        }
+
+        function addToGallery(imageData, styleName, fileName) {
+            const galleryItem = {
+                id: Date.now() + Math.random(),
+                imageData: imageData,
+                styleName: styleName,
+                fileName: fileName,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            gallery.unshift(galleryItem);
+            localStorage.setItem('styleGallery', JSON.stringify(gallery));
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const galleryContainer = document.getElementById('gallery');
+            galleryContainer.innerHTML = '';
+            
+            gallery.forEach(item => {
+                const galleryItemEl = document.createElement('div');
+                galleryItemEl.className = 'gallery-item';
+                galleryItemEl.innerHTML = `
+                    <img src="${item.imageData}" alt="${item.fileName}" style="filter: ${styleFilters[item.styleName] || 'none'}">
+                    <div class="gallery-overlay">
+                        <div>${getStyleDisplayName(item.styleName)}</div>
+                        <div style="font-size: 0.8em; opacity: 0.8;">${item.timestamp}</div>
+                    </div>
+                `;
+                
+                galleryItemEl.addEventListener('click', () => {
+                    currentImage = item.imageData;
+                    document.getElementById('comparisonView').style.display = 'flex';
+                    document.getElementById('originalPreview').src = item.imageData;
+                    document.getElementById('styledPreview').src = item.imageData;
+                    document.getElementById('styledPreview').style.filter = styleFilters[item.styleName];
+                });
+                
+                galleryContainer.appendChild(galleryItemEl);
+            });
+        }
+
+        function updateFilterStrength(strength) {
+            const styledImg = document.getElementById('styledPreview');
+            if (styledImg.style.filter) {
+                // 调整滤镜强度（简化实现）
+                const baseFilter = styledImg.style.filter;
+                const strengthFactor = strength / 50; // 50%为基准
+                
+                // 这里可以实现更复杂的强度调整逻辑
+                styledImg.style.opacity = 0.5 + (strength / 100) * 0.5;
+            }
+        }
+
+        function resetImage() {
+            if (!originalImageData) return;
+            
+            const styledImg = document.getElementById('styledPreview');
+            styledImg.style.filter = 'none';
+            styledImg.style.opacity = '1';
+            styledImg.src = originalImageData;
+        }
+
+        function downloadImage() {
+            if (!currentImage) {
+                alert('请先选择图片！');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const img = document.getElementById('styledPreview');
+            
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // 创建一个新的图片元素来应用滤镜
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                ctx.filter = img.style.filter || 'none';
+                ctx.drawImage(tempImg, 0, 0);
+                
+                const link = document.createElement('a');
+                link.download = '西夏风格作品_' + new Date().getTime() + '.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            };
+            tempImg.src = currentImage;
+        }
+
+        function downloadBatch() {
+            if (gallery.length === 0) {
+                alert('画廊中没有作品！');
+                return;
+            }
+            
+            showProgress('准备批量下载...', 0);
+            
+            gallery.forEach((item, index) => {
+                setTimeout(() => {
+                    const canvas = document.createElement('canvas');
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.filter = styleFilters[item.styleName] || 'none';
+                        ctx.drawImage(img, 0, 0);
+                        
+                        const link = document.createElement('a');
+                        link.download = `作品${index + 1}_${getStyleDisplayName(item.styleName)}.png`;
+                        link.href = canvas.toDataURL('image/png', 1.0);
+                        link.click();
+                        
+                        const progress = ((index + 1) / gallery.length) * 100;
+                        showProgress(`下载中 ${index + 1}/${gallery.length}`, progress);
+                        
+                        if (index === gallery.length - 1) {
+                            setTimeout(() => {
+                                hideProgress();
+                            }, 1000);
+                        }
+                    };
+                    img.src = item.imageData;
+                }, index * 1000);
+            });
+        }
+
+        function shareToSocial() {
+            if (!currentImage) {
+                alert('请先选择要分享的作品！');
+                return;
+            }
+            
+            if (navigator.share) {
+                // 使用原生分享API
+                navigator.share({
+                    title: '我的西夏风格作品',
+                    text: '通过影界重构创作的艺术作品',
+                    url: window.location.href
+                });
+            } else {
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('链接已复制到剪贴板，可以分享给朋友！');
+                });
+            }
+        }
+
+        function saveToGallery() {
+            if (!currentImage) {
+                alert('请先选择图片！');
+                return;
+            }
+            
+            const styledImg = document.getElementById('styledPreview');
+            const currentFilter = styledImg.style.filter;
+            
+            if (!currentFilter || currentFilter === 'none') {
+                alert('请先应用一个风格效果！');
+                return;
+            }
+            
+            // 找到当前使用的风格
+            let styleName = 'custom';
+            for (const [name, filter] of Object.entries(styleFilters)) {
+                if (filter === currentFilter) {
+                    styleName = name;
+                    break;
+                }
+            }
+            
+            addToGallery(currentImage, styleName, '手动保存_' + new Date().getTime());
+            alert('作品已保存到画廊！');
+        }
+
+        function getStyleDisplayName(styleName) {
+            const displayNames = {
+                tangut_mural: '西夏壁画',
+                stone_carving: '石窟雕刻',
+                silk_painting: '丝绸画',
+                porcelain: '瓷器纹饰',
+                oil_painting: '油画质感',
+                watercolor: '水彩晕染',
+                comic: '漫画风格',
+                cyberpunk: '赛博朋克',
+                bronze: '青铜质感',
+                marble: '大理石纹',
+                fabric: '织锦纹理',
+                aged_paper: '古纸泛黄',
+                golden_hour: '黄金时刻',
+                moonlight: '月光朦胧',
+                neon: '霓虹闪烁',
+                sunset_glow: '夕阳余晖'
+            };
+            return displayNames[styleName] || styleName;
+        }
+
+        function showProgress(message, percentage) {
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            
+            progressBar.style.display = 'block';
+            progressFill.style.width = percentage + '%';
+            
+            // 可以添加进度消息显示
+            console.log(message, percentage + '%');
+        }
+
+        function hideProgress() {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.display = 'none';
+        }
+
+        // 页面加载时渲染画廊
+        window.addEventListener('load', () => {
+            renderGallery();
+        });
+    </script>
+</body>
+</html>
